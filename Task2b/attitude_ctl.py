@@ -65,7 +65,7 @@ class AttitudeControl:
         # Add your PID params here
 
         self.pid_roll.set_kp(10)
-        self.pid_roll.set_ki(1)
+        self.pid_roll.set_ki(0.25)
         self.pid_roll.set_kd(0.25)
 
         self.pid_roll_rate.set_kp(50)
@@ -73,7 +73,7 @@ class AttitudeControl:
         self.pid_roll_rate.set_kd(0)
 
         self.pid_pitch.set_kp(10)
-        self.pid_pitch.set_ki(1)
+        self.pid_pitch.set_ki(0.25)
         self.pid_pitch.set_kd(0.25)
 
         self.pid_pitch_rate.set_kp(50)
@@ -162,20 +162,10 @@ class AttitudeControl:
             yaw_rate_sp = self.pid_yaw.compute(yaw_ref, self.euler_mv.z)
             # Inner loop - yaw rate
             yaw_output = self.pid_yaw_rate.compute(yaw_rate_sp, self.euler_rate_mv.z)
-
-
-            # Combine control outputs for each motor
-            # Motor configuration:
-            #   1 ↺     2 ↻
-            #     \   /
-            #      |X|
-            #     /   \
-            #   4 ↻     3 ↺
             
-            # Base motor speed from height controller
             w_hover = self.w_sp
             
-            # Add roll, pitch, yaw contributions
+            # for 4 propellers
             mot_sp1 = w_hover - roll_output - pitch_output - yaw_output
             mot_sp2 = w_hover + roll_output - pitch_output + yaw_output
             mot_sp3 = w_hover + roll_output + pitch_output - yaw_output
